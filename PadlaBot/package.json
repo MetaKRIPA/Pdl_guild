@@ -1,0 +1,25 @@
+{
+  "name": "padlabot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "colors": "^1.4.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.3",
+    "input": "^1.0.1",
+    "mongoose": "^6.5.0",
+    "telegraf": "^4.8.5",
+    "telegram": "^2.9.10",
+    "tonweb": "^0.0.50",
+    "tonweb-mnemonic": "^1.0.1"
+  },
+  "description": ""
+}

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+    <div class="jumbotron">
+        <h1>
+            Админка бота
+
+            <button id="paymentButton" class="btn btn-primary" onclick="sentTon()">Sent ton</button>
+            <div class="h4">Сейчас <%= totalCost %> количество TON с royalty </div>
+<!--            <div class="h6 fw-lighter"><button id="paymentB utton" class="btn btn-secondary" onclick="PreviousRoyalty()">Включить предыдущий месяц</button> Нажмите, чтобы включить роялти с прошлого месяца</div>-->
+<!--            <div class="h6 fw-lighter"><button id="paymentB utton" class="btn btn-secondary" onclick="CancelPreviousRoyalty()">Выключить предыдущий месяц</button> Нажмите, чтобы убрать роялти с прошлого месяца</div>-->
+        </h1>
+        <span id="paymentMessage"></span>
+
+        <% if(locals.owners){ %>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col"><strong>Адресса кошелька</strong>
+                </td>
+                <th scope="col">Количество нфт
+                </td>
+                <th scope="col">%
+                </td>
+                <th scope="col">Количество Ton
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <% for (let key in owners){ %>
+                <tr>
+                    <td><strong class="address"><%= key %></strong></td>
+                    <td><%= owners[key].number %> нфт</td>
+                    <td><%= owners[key].inPersent.toFixed(3) %>%</td>
+                    <td>
+                        <div class="ton"><%= owners[key].tons.toFixed(3) %>
+                            %>
+                        </div>
+                        ton
+                    </td>
+                    <!-- <td><%= (owners[key] * nftInPersent).toFixed(3) %>%</td>
+                    <td><div class="ton"><%= ((totalCost * (owners[key] * nftInPersent)) / 100).toFixed(3) %></div> ton</td> -->
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+        <% } else { %>
+            <p>Error loading data. Try reloading the <a href="/">page</a></p>
+        <% } %>
+    </div>
+</main>
+
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
+<script>
+
+    const sentTon = async () => {
+        const paymentButton = document.querySelector('#paymentButton')
+        const paymentMessage = document.querySelector('#paymentMessage')
+
+        paymentButton.setAttribute('disabled', 'disabled')
+        paymentMessage.innerHTML = 'В течение нескольких минут - оплата будет произведена по всем кошелькам. Нужно немного подождать'
+
+        const rawResponse = await fetch('/api/sendTon', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })
+            .then((response) => response.json())
+            .then((result) => {
+                console.log(result);
+                paymentButton.removeAttribute('disabled')
+                paymentMessage.innerHTML = 'Оплата завершена'
+
+                const failed = result.filter(el => !el.success).map(el => el.wallet)
+
+                if (failed.length) {
+                    paymentMessage.innerHTML += '. Неудачные попытки: ' + failed.join(', ')
+                }
+            });
+    }
+</script>
+</body>
+</html>
