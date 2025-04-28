@@ -1,6 +1,0 @@
-{
-    "mongo": "local",
-    "serverPort": 3500,
-    "Logger": true,
-    "Telegram": "shailgo"
-}
